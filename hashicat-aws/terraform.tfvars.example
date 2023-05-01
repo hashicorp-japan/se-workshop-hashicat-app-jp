@@ -1,7 +1,7 @@
 
 # Source: hashicat-aws
-# Prefix must be all lowercase letters, digits, and hyphens.
-# Region is defaulted to us-east-1 and can be modified.
+# prefixに使える文字は小文字の英字、数字、ハイフンです。
+# regionはus-east-1に設定されていますが、変更することができます。
 
 prefix = "YOUR_NAME"
 region = "us-east-1"
