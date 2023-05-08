@@ -1,36 +1,36 @@
-# This policy uses the Sentinel tfplan/v2 import to require that
-# all EC2 instances have the Environment key in the tags attribute
-# and that it has a value from an allowed list
+# このポリシーでは、Sentinel tfplan/v2 importを使用して、
+# すべてのEC2インスタンスがタグ属性にEnvironmentキーを持ち、
+# それが許可リストに載っている値を持つことを要求します。
 
-# Import common-functions/tfplan-functions/tfplan-functions.sentinel
-# with alias "plan"
+# "plan" エイリアスで common-functions/tfplan-functions/tfplan-functions.sentinel
+# をインポートします。
 import "tfplan-functions" as plan
 
-# Mandatory tags
+# 必須のタグ
 mandatory_tags = ["Environment", "Department"]
 
-# Allowed Environments
-# Include "null" to allow missing or computed values
+# 許可されたEnvironmentの値
+# "null"をリストに入れることで、未設定と"computed values"を許可します。
 allowed_environments = ["dev", "qa", "prod"]
 
-# Get all EC2 instances
+# 全てのEC2インスタンスを取得します
 allEC2Instances = plan.find_resources("aws_instance")
 
-# Filter to EC2 instances that are missing the environment tag
-# Warnings will be printed for all violations since the last parameter is true
+# Environmentタグを持たないEC2インスタンスのみをフィルタします。
+# 最後のパラメータを"true"にすると、全ての違反事項が出力されます。
 EC2InstancesWithoutEnvironmentTag =
         plan.filter_attribute_not_contains_list(allEC2Instances,
                         "tags", mandatory_tags, true)
 
-# Filter to EC2 instances that have the environment tag with an invalid value
-# Warnings will be printed for all violations since the last parameter is true
+# 無効なEnvironmentタグを持つEC2インスタンスをフィルタします。
+# 最後のパラメータを"true"にすると、全ての違反事項が出力されます。
 EC2InstancesWithInvalidEnvironmentTag = plan.filter_attribute_map_key_contains_items_not_in_list(allEC2Instances,
                         "tags", "Environment", allowed_environments, true)
 
-# Count violations
+# 違反の件数をカウントします。
 violations = length(EC2InstancesWithoutEnvironmentTag["messages"]) + length(EC2InstancesWithInvalidEnvironmentTag["messages"])
 
-# Main rule
+# メインルール
 main = rule {
   violations is 0
 }
