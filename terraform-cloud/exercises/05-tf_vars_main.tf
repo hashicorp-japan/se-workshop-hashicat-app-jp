@@ -1,6 +1,6 @@
 
 /**** **** **** **** **** **** **** **** **** **** **** ****
- Add PREFIX to the hashicat workspace variables
+ hashhicatのワークスペース変数にPREFIXを追加する。
 **** **** **** **** **** **** **** **** **** **** **** ****/
 
 resource "tfe_variable" "prefix" {
@@ -12,7 +12,7 @@ resource "tfe_variable" "prefix" {
 }
 
 /**** **** **** **** **** **** **** **** **** **** **** ****
- Add REGION to the hashicat workspace variables
+ hashhicatのワークスペース変数にREGIONを追加する。
 **** **** **** **** **** **** **** **** **** **** **** ****/
 
 resource "tfe_variable" "region" {

@@ -3,9 +3,9 @@
 ##############################################################################
 # Variables File
 #
-# Here is where we store the default values for all the variables used in our
-# Terraform code. If you create a variable with no default, the user will be
-# prompted to enter it (or define it via config file or command line flags.)
+# variables.tfに、Terraformコード内で利用する全ての変数のデフォルト値を設定しています。
+# デフォルトのない変数を作成した場合、ユーザはプロンプトで値を入力する必要があります
+# (または設定ファイルやコマンドラインフラグで定義することもできます)。
 
 variable "prefix" {
   description = "This prefix will be included in the name of most resources."

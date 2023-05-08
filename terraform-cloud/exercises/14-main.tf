@@ -9,7 +9,7 @@ terraform {
 }
 
 /**** **** **** **** **** **** **** **** **** **** **** ****
-Obtain name of the target organization from the particpant.
+参加者からターゲットとするOrg名を取得します。
 **** **** **** **** **** **** **** **** **** **** **** ****/
 
 data "tfe_organization" "org" {
@@ -18,13 +18,13 @@ data "tfe_organization" "org" {
 
 /**** **** **** **** **** **** **** **** **** **** **** ****
  
- * DEPRECATED *
+ * 廃止予定 *
  
- Configure workspace with local execution mode so that plans 
- and applies occur on this workstation. And, Terraform Cloud 
- is only used to store and synchronize state. 
+ ワークスペースをローカル実行モードで構成し、PlanとApplyがこの
+ ワークステーション上で行われるようにします。
+ Terraform CloudはStateの保存と同期にのみ使用します。
 
- * DEPRECATED *
+ * 廃止予定 *
 
 **** **** **** **** **** **** **** **** **** **** **** ****/
 
@@ -37,13 +37,13 @@ data "tfe_organization" "org" {
 
 /**** **** **** **** **** **** **** **** **** **** **** ****
 
- * DEPRECATED *
+ * 廃止予定 *
 
- Configure workspace with REMOTE execution mode so that plans 
- and applies occur on Terraform Cloud's infrastructure. 
- Terraform Cloud exectures code and stores state. 
+ ワークスペースをREMOTE実行モードで構成し、PlanとApplyが
+ Terraform Cloudのインフラで行われるようにします。 
+ Terraform Cloudがコードを実行し、Stateの保存も実施します。
 
-* DEPRECATED *
+* 廃止予定 *
 
 **** **** **** **** **** **** **** **** **** **** **** ****/
 
@@ -56,14 +56,14 @@ data "tfe_organization" "org" {
 
 /**** **** **** **** **** **** **** **** **** **** **** ****
 
- * DEPRECATED *
+ * 廃止予定 *
 
- Configure workspace with REMOTE execution mode so that plans 
- and applies occur on Terraform Cloud's infrastructure. 
- Terraform Cloud exectures code and stores state. 
+ ワークスペースをREMOTE実行モードで構成し、PlanとApplyが
+ Terraform Cloudのインフラで行われるようにします。 
+ Terraform Cloudがコードを実行し、Stateの保存も実施します。
 
-* DEPRECATED *
-
+* 廃止予定 *
+* 
 **** **** **** **** **** **** **** **** **** **** **** ****/
 
 # resource "tfe_workspace" "hashicat" {
@@ -79,12 +79,12 @@ data "tfe_organization" "org" {
 # }
 
 /**** **** **** **** **** **** **** **** **** **** **** ****
- Configure workspace with REMOTE execution mode so that plans 
- and applies occur on Terraform Cloud's infrastructure. 
- Terraform Cloud exectures code and stores state.
+ ワークスペースをREMOTE実行モードで構成し、PlanとApplyが
+ Terraform Cloudのインフラで行われるようにします。 
+ Terraform Cloudがコードを実行し、Stateの保存も実施します。
 
- We are removing the VCS configuration so that GitHub Actions
- can trigger remote work.
+ GitHub ActionsがRemote Runをトリガーできるように、
+ VCS設定を削除します。
 **** **** **** **** **** **** **** **** **** **** **** ****/
 
 resource "tfe_workspace" "hashicat" {
@@ -95,7 +95,7 @@ resource "tfe_workspace" "hashicat" {
 }
 
 /**** **** **** **** **** **** **** **** **** **** **** ****
- Configure organization-wide variables with Variables sets
+ Organization全体で利用可能な変数を、Variables Setsを使って設定します。
 **** **** **** **** **** **** **** **** **** **** **** ****/
 
 resource "tfe_variable_set" "hashicat" {
@@ -105,7 +105,7 @@ resource "tfe_variable_set" "hashicat" {
 }
 
 /**** **** **** **** **** **** **** **** **** **** **** ****
- Assing the Variables set to the hashicat workspace
+ HashicatワークスペースにVariables Setsを適用する。
 **** **** **** **** **** **** **** **** **** **** **** ****/
 
 resource "tfe_workspace_variable_set" "hashicat" {

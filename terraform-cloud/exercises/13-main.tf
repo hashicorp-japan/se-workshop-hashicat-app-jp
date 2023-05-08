@@ -1,8 +1,8 @@
 
 /**** **** **** **** **** **** **** **** **** **** **** ****
- Specifies the Terraform provider for our deployment. 
- For example: "aws_s3", "Azure Blob Storage", or "Google Cloud
- Storage" modules in the public Terraform Registry.
+ デプロイのためのTerraform Providerを指定します。 
+ 例えば: 公開Terraform Registryにある"aws_s3", "Azure Blob Storage",
+ "Google Cloud Storage" モジュールのようなものです。
 **** **** **** **** **** **** **** **** **** **** **** ****/
 
 resource "tfe_registry_module" "STORAGE_MODULE" {

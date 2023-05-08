@@ -13,7 +13,7 @@ locals {
 }
 
 /**** **** **** **** **** **** **** **** **** **** **** ****
-Obtain name of the target organization from the particpant.
+TFCのOrg名をユーザーから取得する。
 **** **** **** **** **** **** **** **** **** **** **** ****/
 
 data "tfe_organization" "org" {
@@ -35,8 +35,8 @@ resource "tfe_project" "hashicat" {
 }
 
 # /**** **** **** **** **** **** **** **** **** **** **** ****
-#  Configure workspace with remote execution mode so that plans 
-#  and applies occur on the Terraform Cloud platform via API.
+#  ワークスペースをリモート実行モードで構成し、プランと適用がAPI経由で
+#  Terraform Cloudプラットフォームで行われるようにします。
 # **** **** **** **** **** **** **** **** **** **** **** ****/
 
 resource "tfe_workspace" "hashicat" {

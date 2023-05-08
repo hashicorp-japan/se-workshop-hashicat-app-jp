@@ -132,18 +132,18 @@ resource "aws_instance" "hashicat" {
   }
 }
 
-# We're using a little trick here so we can run the provisioner without
-# destroying the VM. Do not do this in production.
+# ここでは、VMを削除することなくプロビジョナーを実行するため、ちょっとしたトリックを
+# 使っています。本番環境では使わないでください。
 
-# If you need ongoing management (Day N) of your virtual machines a tool such
-# as Chef or Puppet is a better choice. These tools track the state of
-# individual files and can keep them in the correct configuration.
+# もし仮想マシンの継続的な管理(Day N運用)が必要であれば、ChefやPuppetを活用することが
+# より良い方法でしょう。これらのツールでは、それぞれのファイルの状態をトラッキングすることが
+# できます。
 
-# Here we do the following steps:
-# Sync everything in files/ to the remote VM.
-# Set up some environment variables for our script.
-# Add execute permissions to our scripts.
-# Run the deploy_app.sh script.
+# ここでは、以下のステップを行います：
+# files/にある全てのファイルをリモートVMに同期させる。
+# スクリプトのためにいくつかの環境変数を設定する。
+# スクリプトに実行権限を付与する。
+# deploy_app.sh スクリプトを実行する。
 resource "null_resource" "configure-cat-app" {
   depends_on = [aws_eip_association.hashicat]
 

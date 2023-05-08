@@ -1,6 +1,6 @@
 
 /**** **** **** **** **** **** **** **** **** **** **** ****
- Set up ADMINS team with the following permissions:
+ 以下の権限を持つADMINSチームを設定します:
 
    * Manage policies 
    * Manage policy overrides
@@ -20,13 +20,13 @@ resource "tfe_team" "admins" {
     manage_workspaces       = true
     manage_vcs_settings     = true
     manage_run_tasks        = true
-    manage_providers        = true // Allows members to publish and delete modules in the organization's private registry.
-    manage_modules          = true // Allows members to publish and delete modules in the organization's private registry.
+    manage_providers        = true // 組織のプライベートレジストリのモジュールの公開と削除をメンバーに許可する。
+    manage_modules          = true // 組織のプライベートレジストリのモジュールの公開と削除をメンバーに許可する。
   }
 }
 
 /**** **** **** **** **** **** **** **** **** **** **** ****
- Set up DEVELOPERS team without any organization-wide access.
+ 組織全体へのアクセス権をもたないDEVELOPERSチームを作成。
 **** **** **** **** **** **** **** **** **** **** **** ****/
 
 resource "tfe_team" "developers" {
@@ -35,7 +35,7 @@ resource "tfe_team" "developers" {
 }
 
 /**** **** **** **** **** **** **** **** **** **** **** ****
- Set up MANAGERS team without any organization-wide access.
+ 組織全体へのアクセス権のないMANAGERSチームを設定します。
 **** **** **** **** **** **** **** **** **** **** **** ****/
 
 resource "tfe_team" "managers" {
@@ -44,9 +44,9 @@ resource "tfe_team" "managers" {
 }
 
 /**** **** **** **** **** **** **** **** **** **** **** ****
- Associate the ADMINS team to permissions on the hashicat
- workspace with the ADMIN access grants. Admin permissions
- provide Full control of the workspace:
+ ADMINSチームは、ADMIN アクセス権限で、hashhicatワークスペースの
+ 権限に関連付けます。ADMINアクセス権は、ワークスペースのフルコントロール
+ が可能です:
 
   * All permissions of write
   * Manage team access
@@ -62,8 +62,8 @@ resource "tfe_team_access" "admins" {
 }
 
 /**** **** **** **** **** **** **** **** **** **** **** ****
- Associate the DEVELOPERS team to permissions on the hashicat
- workspace with the WRITE access grants. Read permissions are:
+ HashicatのパーミッションにDEVELOPERSチームを関連付けます。
+ ワークスペースにWRITEアクセス権が付与されます。読み取りアクセス権は:
 
   * All permissions of plan
   
@@ -84,9 +84,8 @@ resource "tfe_team_access" "developers" {
 }
 
 /**** **** **** **** **** **** **** **** **** **** **** ****
- Associate the MANAGERS team to permissions on the hashicat
- workspace with the READ access grants. Baseline permissions 
-for reading a workspace are:
+ MANAGERSチームをhashhicatワークスペースのREADアクセス権に関連付けます。
+ ワークスペースをReadするためのベースライン権限は次のとおりです。:
 
   * Read runs
   * Read variables
@@ -102,7 +101,7 @@ resource "tfe_team_access" "managers" {
 }
 
 /**** **** **** **** **** **** **** **** **** **** **** ****
- Invite LARS, AISHA and HIRO to the organization
+ LARS、AISHA、HIROをOrgに招待します。
 **** **** **** **** **** **** **** **** **** **** **** ****/
 
 locals {
@@ -117,7 +116,7 @@ resource "tfe_organization_membership" "all_users" {
 }
 
 /**** **** **** **** **** **** **** **** **** **** **** ****
- Add LARS to the ADMIN team - workshops+lars@hashicorp.com
+ ADMINチームにLARSを追加 - workshop+lars@hashicorp.com
 **** **** **** **** **** **** **** **** **** **** **** ****/
 
 resource "tfe_team_members" "admins" {
@@ -126,7 +125,7 @@ resource "tfe_team_members" "admins" {
 }
 
 /**** **** **** **** **** **** **** **** **** **** **** ****
- Add AISHA to the DEVELOPERS team - workshops+aisha@hashicorp.com
+ AISHAをDEVELOPERSチームに追加 - workshop+aisha@hashicorp.com
 **** **** **** **** **** **** **** **** **** **** **** ****/
 
 resource "tfe_team_members" "developers" {
@@ -135,7 +134,7 @@ resource "tfe_team_members" "developers" {
 }
 
 /**** **** **** **** **** **** **** **** **** **** **** ****
- Add HIRO to the MANAGERS - workshops+hiro@hashicorp.com
+ HIROをMANAGERSに追加 - workshop+hiro@hashicorp.com
 **** **** **** **** **** **** **** **** **** **** **** ****/
 
 resource "tfe_team_members" "managers" {

@@ -1,8 +1,8 @@
 #!/bin/bash
 # Copyright (c) HashiCorp, Inc.
 
-# Script to deploy a very simple web application.
-# The web app has a customizable image and some text.
+# シンプルなウェブアプリケーションをデプロイするためのスクリプトです。
+# このウェブアプリケーションにはカスタマイズ可能なイメージとテキストが含まれています。
 
 cat << EOM > /var/www/html/index.html
 <html>
@@ -13,7 +13,7 @@ cat << EOM > /var/www/html/index.html
   <!-- BEGIN -->
   <center><img src="http://${PLACEHOLDER}/${WIDTH}/${HEIGHT}"></img></center>
   <center><h2>Meow World!</h2></center>
-  Welcome to ${PREFIX}'s app. Replace this text with your own.
+  ${PREFIX}のウェブサイトにようこそ。このテキストをご自身で変更してください。
   <!-- END -->
 
   </div>

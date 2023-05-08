@@ -1,4 +1,4 @@
-# This policy requires that the delta monthly costs estimate are less than $100 for the development team.
+# このポリシーでは、開発チームのデルタ月次コスト見積もりが100ドル未満であることを要求します。
 
 import "tfrun"
 import "decimal"
