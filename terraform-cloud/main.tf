@@ -9,7 +9,7 @@ terraform {
 }
 
 /**** **** **** **** **** **** **** **** **** **** **** ****
-Obtain name of the target organization from the particpant.
+参加者からターゲットとするOrg名を取得します。
 **** **** **** **** **** **** **** **** **** **** **** ****/
 
 data "tfe_organization" "org" {
@@ -17,9 +17,9 @@ data "tfe_organization" "org" {
 }
 
 /**** **** **** **** **** **** **** **** **** **** **** ****
- Configure workspace with local execution mode so that plans 
- and applies occur on this workstation. And, Terraform Cloud 
- is only used to store and synchronize state. 
+ ワークスペースをローカル実行モードで構成し、PlanとApplyがこの
+ ワークステーション上で行われるようにします。
+ Terraform CloudはStateの保存と同期にのみ使用します。
 **** **** **** **** **** **** **** **** **** **** **** ****/
 
 resource "tfe_workspace" "hashicat" {

@@ -1,6 +1,6 @@
 
 /**** **** **** **** **** **** **** **** **** **** **** ****
- Add GOOGLE_CREDENTIALS to the Cloud Credentials variable set
+ クラウド認証情報の変数セットにGOOGLE_CREDENTIALSを追加します。
 **** **** **** **** **** **** **** **** **** **** **** ****/
 
 resource "tfe_variable" "google_cloud_credentials" {
@@ -13,7 +13,7 @@ resource "tfe_variable" "google_cloud_credentials" {
 }
 
 /**** **** **** **** **** **** **** **** **** **** **** ****
- Add Google Cloud project ID to the Cloud Credentials variable set
+ Google CloudプロジェクトIDをCloud Credentials変数セットに追加します。
 **** **** **** **** **** **** **** **** **** **** **** ****/
 
 resource "tfe_variable" "google_cloud_project" {

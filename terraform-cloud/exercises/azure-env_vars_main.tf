@@ -1,6 +1,6 @@
 
 /**** **** **** **** **** **** **** **** **** **** **** ****
- Add ARM_CLIENT_ID to the Cloud Credentials variable set
+ ARM_CLIENT_ID を Cloud Credentials 変数セットに追加します。
 **** **** **** **** **** **** **** **** **** **** **** ****/
 
 resource "tfe_variable" "azure_arm_client_id" {
@@ -13,7 +13,7 @@ resource "tfe_variable" "azure_arm_client_id" {
 }
 
 /**** **** **** **** **** **** **** **** **** **** **** ****
- Add ARM_CLIENT_SECRET to the Cloud Credentials variable set
+ ARM_CLIENT_SECRET を Cloud Credentials 変数セットに追加します。
 **** **** **** **** **** **** **** **** **** **** **** ****/
 
 resource "tfe_variable" "azure_arm_client_secret" {
@@ -26,7 +26,7 @@ resource "tfe_variable" "azure_arm_client_secret" {
 }
 
 /**** **** **** **** **** **** **** **** **** **** **** ****
- Add ARM_SUBSCRIPTION_ID to the Cloud Credentials variable set
+ ARM_SUBSCRIPTION_ID を Cloud Credentials 変数セットに追加します。
 **** **** **** **** **** **** **** **** **** **** **** ****/
 
 resource "tfe_variable" "azure_arm_subscription_id" {
@@ -39,7 +39,7 @@ resource "tfe_variable" "azure_arm_subscription_id" {
 }
 
 /**** **** **** **** **** **** **** **** **** **** **** ****
- Add ARM_TENANT_ID to the Cloud Credentials variable set
+ ARM_TENANT_ID を Cloud Credentials 変数セットに追加します。
 **** **** **** **** **** **** **** **** **** **** **** ****/
 
 resource "tfe_variable" "azure_arm_tenant_id" {

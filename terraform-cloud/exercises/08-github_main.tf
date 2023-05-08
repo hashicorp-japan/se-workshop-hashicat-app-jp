@@ -1,7 +1,6 @@
 
 /**** **** **** **** **** **** **** **** **** **** **** ****
- An OAuth Client represents the connection between an 
- organization and a VCS provider.
+ OAuthクライアントは、OrgとVCSプロバイダーとの間の接続を担います。
 **** **** **** **** **** **** **** **** **** **** **** ****/
 
 resource "tfe_oauth_client" "github" {

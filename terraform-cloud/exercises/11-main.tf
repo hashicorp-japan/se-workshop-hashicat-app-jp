@@ -1,7 +1,7 @@
 
 /**** **** **** **** **** **** **** **** **** **** **** ****
- Add a collection of policies to enhance the governance rules
- to support business rules and security guidelines.
+ ビジネスルールとセキュリティガイドラインをサポートするために、
+ ガバナンスルールを強化するポリシーのコレクションを追加します。
 **** **** **** **** **** **** **** **** **** **** **** ****/
 
 resource "tfe_policy_set" "test" {

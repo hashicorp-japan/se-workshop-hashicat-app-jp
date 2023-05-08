@@ -1,6 +1,6 @@
 
 /**** **** **** **** **** **** **** **** **** **** **** ****
- Add AWS_ACCESS_KEY_ID to the Cloud Credentials variable set
+ AWS_ACCESS_KEY_ID を Cloud Credentials 変数セットに追加する。
 **** **** **** **** **** **** **** **** **** **** **** ****/
 
 resource "tfe_variable" "aws_access_key_id" {
