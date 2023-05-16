@@ -32,16 +32,18 @@ cnone() {
 clear
 echo -e '\033[2K'
 
-note="  Gitは、コミットをIDに関連付けるためにユーザー名を使用します。
-  これは、管理対象となるGitHubの組織や個人のユーザーアカウントです。
+note="  Git uses a username to associate commits with an 
+  identity. This is the target GitHub organization or 
+  individual user account to manage.
 
-  例えば、
+  For instance, 
 
     Username: shiffman
     Organization: shiffman
     URL: https://github.com/shiffman
 
-  この値を使って、環境変数GITHUB_OWNERを設定します。"
+  We use this value to set the GITHUB_OWNER 
+  environment variable."
 
 cyellow
 ctab "-"
@@ -55,11 +57,14 @@ cnone
   echo ""
 # done
 
-note="  organizationフィールドはownerと同じとみなせるため、多くの場合、ownerの値を利用することができます。
+note="  The organization field behaves the same as 
+  owner, which should be used in most cases. 
   
-  この値を使用して、GITHUB_ORGANIZATION環境変数を設定します。
+  We use this value to set the GITHUB_ORGANIZATION 
+  environment variable. 
   
-  デフォルトを受け入れるには、returnを押します。あるいは、別の GitHub Organization を入力することもできます。"
+  Press return to accept the default. Or, you can
+  enter a different GitHub organization."
 
 cyellow
 ctab "-"
@@ -70,11 +75,12 @@ echo -e '\033[2K'
 read -p " Github Organization [${git_user}]: " git_org
 echo ""
 
-note="  GitHub OAuth / Personal Access Token.
+note="  A GitHub OAuth / Personal Access Token.
 
-  この値を使って、環境変数GITHUB_TOKENを設定します。
-    
-  ここに文字列を貼り付けてください。値は表示されません。"
+  We use this value to set the GITHUB_TOKEN 
+  environment variable.
+  
+  Paste the string here. The value is not displayed."
 
 cyellow
 ctab "-"
@@ -86,7 +92,8 @@ read -s -p " Github Token: " git_token
 
 echo ""
 echo ""
-note="  GitHubは、コミットをGitHub.comのあなたのアカウントと関連付けるために、あなたのメールアドレスを使用します。"
+note="  GitHub uses your commit email address to associate 
+  commits with your account on GitHub.com."
 
 cyellow
 ctab "-"
@@ -107,8 +114,9 @@ fi
 # echo $user_email
 # echo $git_token
 
-# これらはTerraform GitHub Repoのランタイム変数です。
-# ターミナルを再読み込みする必要がないようにこのような設定になっています。
+# These are runtime variables for the
+# Terraform GitHub Repo. We express these
+# to avoid having to reload the terminal
 
 export GITHUB_ORGANIZATION=$git_org
 export GITHUB_TOKEN=$git_token
@@ -118,9 +126,9 @@ export GITHUB_REPO="hashicat-app"
 export USER_EMAIL="${user_email}"
 export USER_NAME="${git_user}"
 
-
-# GitHubのリポジトリ管理用のTerraform変数です。
-# TerraformのGitHubのorg codeにこれらを使っています。
+# Terraform variables for GitHub repo
+# management. We're using these for the
+# Terraform GitHub organization code
 
 if grep -wq "GITHUB_OWNER" "/root/.bashrc"; then
   sed -i -r "s|(export GITHUB_OWNER=)(.+)?$|\1$GITHUB_OWNER|g" /root/.bashrc
@@ -146,12 +154,13 @@ else
   echo "export GITHUB_REPO=${GITHUB_REPO}" >> /root/.bashrc
 fi
 
-# VCS接続用のTerraform変数です。
-# これらをTerraform Cloud WorkspaceとPMR Moduleに利用します。
-# より具体的には、以下のタイミングでこれらを使用します：
+# Terraform variables for VCS connection.
+# We're using these for the Terraform 
+# Cloud workspace and PMR Module. 
+# More explicitly, we use these when we:
 #
-# 1. VCS接続の作成時、および、
-# 2. GitHubからPMR Moduleをロードする際。
+# 1. link the VCS connection, and
+# 2. load the PMR module from GitHub
 
 export TF_VAR_github_organization=$GITHUB_ORGANIZATION
 export TF_VAR_github_token=$GITHUB_TOKEN

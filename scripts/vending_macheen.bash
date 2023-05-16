@@ -7,14 +7,14 @@ export HCLOGO="
                     :J#@@@@:    .@@@@B            
                 .!G&@@@@@@@.    .@@@@@   .7.      
              ^5&@@@@@@@&P~      .@@@@@   ~@@&5^   
-             @@@@@@@B7.   .:    .@@@@@   ^@@@@@   ACME 自販機にようこそ！
+             @@@@@@@B7.   .:    .@@@@@   ^@@@@@   Welcome to ACME Vending Macheen!
              @@@@@J    !G&@:    .@@@@@   ^@@@@@   
-             @@@@@~   @@@@@.    .@@@@@   ^@@@@@   - シニアクラウド管理者によってコーディングされました。
+             @@@@@~   @@@@@.    .@@@@@   ^@@@@@   - Coded by Senior Cloud Admin
              @@@@@~   @@@@@BPPPPG@@@@@   ^@@@@@   - Powered by Terraform Cloud
              @@@@@~   @@@@@@@@@@@@@@@@   ^@@@@@   
-             @@@@@~   @@@@@BPPPPB@@@@@   ^@@@@@   あなたのプロジェクトに最適な製品を提供するため、
-             @@@@@~   @@@@@.    .@@@@@   ^@@@@@   ワークフローに関する質問に回答してください。
-             @@@@@~   @@@@@:    .@&G!    ?@@@@@   
+             @@@@@~   @@@@@BPPPPB@@@@@   ^@@@@@   Please answer the workflow questions
+             @@@@@~   @@@@@.    .@@@@@   ^@@@@@   to allocate the appropriate product 
+             @@@@@~   @@@@@:    .@&G!    ?@@@@@   for your project.
              @@@@@~   @@@@@:    :'   .7G@@@@@@@   
              ^5&@@!   @@@@@:      ~5&@@@@@@@&5^   
                 .7:   @@@@@:    .@@@@@@@&G7.      
@@ -143,7 +143,7 @@ tput sc
 echo ""
 department=(Development CloudOps Marketing)
 selected=()
-PS3=$'\n部門を選択してください: '
+PS3=$'\nPlease select your department: '
 select name in "${department[@]}" ; do
     for reply in $REPLY ; do
         selected+=(${department[reply - 1]})
@@ -154,15 +154,15 @@ done
 echo Selected: "${selected[@]}"
 echo ""
 cprint " " 10
-read -n 1 -s -r -p "任意のキーを押して続行します..."
+read -n 1 -s -r -p "Press any key to continue..."
 printf '\r'; printf ' %0.s' {0..28}; printf '\n%.s' {1..2}
 
 tput rc
 tput ed
 
 echo ""
-description=("機能検証" "負荷試験" "フルスタック")
-PS3=$'\nご要望に合う内容を選択してください: '
+description=("Feature Validation" "Load Testing" "Full Stack")
+PS3=$'\nPlease select the description that matches your requirements: '
 select name in "${description[@]}" ; do
     for reply in $REPLY ; do
         selected+=(${description[reply - 1]})
@@ -173,7 +173,7 @@ done
 echo Selected: "${selected[@]}"
 echo ""
 cprint " " 10
-read -n 1 -s -r -p "任意のキーを押して続行します..."
+read -n 1 -s -r -p "Press any key to continue..."
 printf '\r'; printf ' %0.s' {0..28}; printf '\n%.s' {1..2}
 
 tput rc
@@ -207,11 +207,11 @@ echo Department: "${selected[0]}"
 cprint " " 10
 echo Purpose: "${selected[1]} ${selected[2]}"
 cprint " " 10
-echo "プロダクトスタック: ${ENV}-${ppurpose}"
+echo "Product Stack: ${ENV}-${ppurpose}"
 cprint " " 10
-echo "コスト: $ ${montly_costs} （毎月）"
+echo "Cost: $ ${montly_costs} per month"
 cprint " " 10
-echo "デプロイメント ID: ${deployment_id}"
+echo "Deployment ID: ${deployment_id}"
 echo ""
 echo ""
 
@@ -221,16 +221,16 @@ DEPLOYMENT_FILE="deployment_${deployment_id}.json"
 
 cat << EOF > "${GENERATOR_DIR}/${DEPLOYMENT_FILE}"
 {
-  "説明" : "${selected[@]}",
-  "部門" : "${selected[0]}",
+  "Description" : "${selected[@]}",
+  "Department" : "${selected[0]}",
   "Environment" : "${ENV}",
-  "目的" : "${selected[1]} ${selected[2]}",
-  "プロダクトスタック" : "${ENV}-${ppurpose}",
-  "デプロイメント ID" : "${deployment_id}"
+  "Purpose" : "${selected[1]} ${selected[2]}",
+  "Product Stack" : "${ENV}-${ppurpose}",
+  "Deployment ID" : "${deployment_id}"
 }
 EOF
 
-read -p "ビルドを開始しますか？'y'または'Y'のみで確定を受け付けます。" -n 1 -r
+read -p "Do you want to build this now? Only 'y' or 'Y' will be accepted to confirm. " -n 1 -r
 echo    # (optional) move to a new line
 if [[ ! $REPLY =~ ^[Yy]$ ]]
 then
@@ -245,6 +245,7 @@ rm -f $DEPLOYMENT_FILE
 
 terraform init --upgrade
 terraform apply -auto-approve
+terraform apply -auto-approve -refresh-only
 clear
 terraform output -json vending_machine_workspaces \
 | jq --arg deployment_id "$deployment_id" '.[] | select(.tag_names[] | select(. == $deployment_id))'
