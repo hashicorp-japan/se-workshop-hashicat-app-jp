@@ -9,15 +9,15 @@ resource "tfe_sentinel_policy" "restrict-deployment-cost" {
   description  = "Policy for HashiCat Social"
   organization = data.tfe_organization.org.name
   policy       = <<-EOS
-  # このポリシーでは、開発チームのデルタ月次コスト見積もりが5ドル未満であることを要求します。
+  # このポリシーでは、開発チームの月次コスト見積もりが5ドル未満であることを要求します。
   
   import "tfrun"
   import "decimal"
 
-  delta_monthly_cost = decimal.new(tfrun.cost_estimate.delta_monthly_cost)
+  proposed_monthly_cost = decimal.new(tfrun.cost_estimate.proposed_monthly_cost)
 
   main = rule {
-    delta_monthly_cost.less_than(5)
+    proposed_monthly_cost.less_than(5)
   }
   EOS
   enforce_mode = "soft-mandatory"
