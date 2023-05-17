@@ -4,13 +4,12 @@
  ガバナンスルールを強化するポリシーのコレクションを追加します。
 **** **** **** **** **** **** **** **** **** **** **** ****/
 
-resource "tfe_policy" "restrict-deployment-cost" {
-  name = "restrict-deployment-cost"
-  description = "Policy for HashiCat Social"
+resource "tfe_sentinel_policy" "restrict-deployment-cost" {
+  name         = "restrict-deployment-cost"
+  description  = "Policy for HashiCat Social"
   organization = data.tfe_organization.org.name
-  kind = "sentinel"
-  policy = <<-EOS
-  # このポリシーでは、開発チームのデルタ月次コスト見積もりが100ドル未満であることを要求します。
+  policy       = <<-EOS
+  # このポリシーでは、開発チームのデルタ月次コスト見積もりが5ドル未満であることを要求します。
   
   import "tfrun"
   import "decimal"
@@ -18,18 +17,18 @@ resource "tfe_policy" "restrict-deployment-cost" {
   delta_monthly_cost = decimal.new(tfrun.cost_estimate.delta_monthly_cost)
 
   main = rule {
-    delta_monthly_cost.less_than(100)
+    delta_monthly_cost.less_than(5)
   }
   EOS
   enforce_mode = "soft-mandatory"
 }
 
-resource "tfe_policy" "enforce-trusted-modules" {
-  name = "enforce-trusted-modules"
-  description = "Policy for HashiCat Social"
+/*
+resource "tfe_sentinel_policy" "enforce-trusted-modules" {
+  name         = "enforce-trusted-modules"
+  description  = "Policy for HashiCat Social"
   organization = data.tfe_organization.org.name
-  kind = "sentinel"
-  policy = <<-EOS
+  policy       = <<-EOS
   import "tfconfig/v2" as tfconfig
 
   param approved_version default "3.0.0"
@@ -49,13 +48,17 @@ resource "tfe_policy" "enforce-trusted-modules" {
   EOS
   enforce_mode = "soft-mandatory"
 }
+*/
 
-resource "tfe_policy" "enforce-mandatory-tags" {
-  name = "enforce-mandatory-tags"
-  description = "Policy for HashiCat Social"
+/*
+ * 以下のPolicyの実行には、tfplan-functions.sentinelが必要です。
+ */ 
+/*
+resource "tfe_sentinel_policy" "enforce-mandatory-tags" {
+  name         = "enforce-mandatory-tags"
+  description  = "Policy for HashiCat Social"
   organization = data.tfe_organization.org.name
-  kind = "sentinel"
-  policy = <<-EOS
+  policy       = <<-EOS
   # このポリシーでは、Sentinel tfplan/v2 importを使用して、
   # すべてのEC2インスタンスがタグ属性にEnvironmentキーを持ち、
   # それが許可リストに載っている値を持つことを要求します。
@@ -95,15 +98,14 @@ resource "tfe_policy" "enforce-mandatory-tags" {
   EOS
   enforce_mode = "soft-mandatory"
 }
+*/
 
 resource "tfe_policy_set" "test" {
-  name          = "Hashicat-Social"
-  description   = "Policies for HashiCat Social"
-  organization  = data.tfe_organization.org.name
-  kind = "sentinel"
+  name         = "Hashicat-Social"
+  description  = "Policies for HashiCat Social"
+  organization = data.tfe_organization.org.name
   policy_ids = [
-    tfe_policy.enforce-mandatory-tags.id,
-    tfe_policy.restrict-deployment-cost.id
+    tfe_sentinel_policy.restrict-deployment-cost.id
   ]
   workspace_ids = [tfe_workspace.hashicat.id]
 }
