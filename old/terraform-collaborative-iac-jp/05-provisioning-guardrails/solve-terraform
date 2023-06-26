@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Enable bash history
+HISTFILE=/root/.bash_history
+set -o history
+
+# User is supposed to add another Sentinel policy set but since one was created
+# by the setup script, doing this is not mandatory. So, no checking needed.
+
+exit 0

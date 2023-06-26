@@ -1,0 +1,12 @@
+#!/bin/bash -l
+
+# Enable bash history
+HISTFILE=/root/.bash_history
+set -o history
+
+cd /root/hashicat-aws
+
+# sed -i '19 a \ \ \ \ environment = "Production"' main.tf
+sed -i 's/name = "\${var\.prefix}-vpc-\${var\.region}"/name = "\${var.prefix}-vpc-\${var.region}"\n    environment = "Production"/' main.tf
+
+exit 0

@@ -1,0 +1,27 @@
+#!/bin/bash -l
+#
+# This script runs when the platform check the challenge.
+#
+# The platform determines if the script was successful using the exit code of this
+# script. If the exit code is not 0, the script fails. 
+#
+set -euxo pipefail
+
+DEFAULT_ROOT_CA_NAME="hashicat-ca-root"
+
+ROOT_CA_NAME=$(vault secrets list -format=json | jq -r '. | to_entries  | map(select(.value.description == "Root Certificate Authority" and .value.type == "pki") | .key)[0]' || echo "false")
+
+echo $ROOT_CA_NAME
+
+  if [ "$ROOT_CA_NAME" == "null" ] || [ "$ROOT_CA_NAME" == "false" ]; then
+    fail-message "Need to build a Root Certificate Authority. Looking for ${DEFAULT_ROOT_CA_NAME}."
+  else
+    ROOT_CA_NAME=${ROOT_CA_NAME::-1}
+    
+    if [ "$ROOT_CA_NAME" != "$DEFAULT_ROOT_CA_NAME" ]; then
+        fail-message "Looking for \"${DEFAULT_ROOT_CA_NAME}\" but found ${ROOT_CA_NAME}."
+    fi
+
+  fi
+
+exit 0

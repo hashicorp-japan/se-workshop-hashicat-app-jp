@@ -1,0 +1,52 @@
+#!/bin/bash
+
+set -e
+
+# Check to make sure assets repo was cloned
+cd /root
+gitclones_exists=$(ls | grep gitclones | wc -l)
+if [ $gitclones_exists -ne 1 ]; then
+    fail-message "The setup script did not clone https://github.com/hashicorp/field-demos-terraform-land-team-Apollo-11-assets.git into /root/gitclones."
+fi
+
+# Check number of directories in gitclones
+cd /root/gitclones
+gitclones=$(ls | wc -l)
+if [ $gitclones -ne 6 ]; then
+    fail-message "The setup script did not create all 6 Terraform configurations in /root/gitclones."
+fi
+
+# Check that GITLAB_PASSWORD was output by first Terraform run
+if [[ -z "${GITLAB_PASSWORD}" ]]; then
+  fail-message "GITLAB_PASSWORD was not output by the Terraform apply in /root/setup/terraform/gitlab/gitlab-server."
+fi
+
+# Check that GITLAB_PUBLIC_ADDRESS was output by first Terraform run
+if [[ -z "${GITLAB_PUBLIC_ADDRESS}" ]]; then
+  fail-message "GITLAB_PUBLIC_ADDRESS was not output by the Terraform apply in /root/setup/terraform/gitlab/gitlab-server."
+fi
+
+# Check that GITLAB_PROJECT was output by first Terraform run
+if [[ -z "${GITLAB_PROJECT}" ]]; then
+  fail-message "GITLAB_PROJECT was not output by the Terraform apply in /root/setup/terraform/gitlab/gitlab-server."
+fi
+
+# Check that GITLAB_TOKEN was created
+if [[ -z "${GITLAB_TOKEN}" ]]; then
+  fail-message "GITLAB_TOKEN was not created by the python script /root/setup/scripts/gitlab_access_token.py."
+fi
+
+# Check second Terraform run
+cd /root/setup/terraform/gitlab/gitlab-projects/
+terraform_state=$(terraform state list | wc -l)
+if [ $terraform_state -ne 11 ]; then
+    fail-message "The terraform apply in /root/setup/terraform/gitlab/gitlab-projects did not create all 11 resources."
+fi
+
+# Check that gitpush.sh replaced "UPDATEME"
+updateme=$(grep "UPDATEME" /root/gitclones/hashicups-application-module/main.tf | wc -l)
+if [ $updateme -ne 0 ]; then
+    fail-message "/root/setup/scripts/gitpush.sh did not replace UPDATEME in /root/gitclones/hashicups-application-module/main.tf"
+fi
+
+exit 0

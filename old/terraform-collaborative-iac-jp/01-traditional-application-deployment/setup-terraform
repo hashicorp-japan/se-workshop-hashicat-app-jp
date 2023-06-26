@@ -1,0 +1,100 @@
+#!/bin/bash
+
+## Provision GitLab server in AWS.
+# Clone repos locally and push in GitLab
+# Generate GitLab Access Token for TFC VCS webhook
+# Output GitLab Address for use in the tracks
+
+set -e
+
+# Wait for Instruqt to finish booting the VM
+# This is better than doing sleep
+while [ ! -f /opt/instruqt/bootstrap/host-bootstrap-completed ]
+do
+    echo "Waiting for Instruqt to finish booting the VM"
+    sleep 1
+done
+
+# Source ENV variables
+echo "source /etc/profile.d/instruqt-env.sh" >> /root/.bashrc
+source ~/.bashrc
+
+# Code server startup script
+cat <<-EOF > /etc/systemd/system/code-server.service
+[Unit]
+Description=Code Server
+After=network.target
+StartLimitIntervalSec=0
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=root
+ExecStart=/usr/bin/code-server --bind-addr 0.0.0.0:8443 --cert --auth none /root/gitclones
+[Install]
+WantedBy=multi-user.target
+EOF
+
+# Start VSC
+systemctl enable code-server
+systemctl start code-server
+
+# Clone Assets
+echo "Cloning assets..."
+git clone https://github.com/hashicorp/field-demos-terraform-land-team-Apollo-11-assets.git
+cp -r field-demos-terraform-land-team-Apollo-11-assets/setup /root/.
+cp -r field-demos-terraform-land-team-Apollo-11-assets/gitclones /root/.
+rm -rf field-demos-terraform-land-team-Apollo-11-assets
+
+# Provision GitLab
+cd ~/setup/terraform/gitlab/gitlab-server
+terraform init
+terraform apply -auto-approve
+
+export GITLAB_PASSWORD=$(terraform show -json |jq '.values.outputs.gitlab_password.value' --raw-output)
+export GITLAB_PUBLIC_ADDRESS=$(terraform show -json |jq '.values.outputs.gitlab_public_address.value' --raw-output)
+export GITLAB_PROJECT=http://$(terraform show -json |jq '.values.outputs.gitlab_public_address.value' --raw-output)/hashicups-development-team/hashicups-application
+export TF_VAR_GITLAB_PUBLIC_ADDRESS=$GITLAB_PUBLIC_ADDRESS
+echo export GITLAB_PASSWORD=$GITLAB_PASSWORD >> /root/.bashrc
+echo export GITLAB_PUBLIC_ADDRESS=$GITLAB_PUBLIC_ADDRESS >> /root/.bashrc
+echo export GITLAB_PROJECT=$GITLAB_PROJECT >> /root/.bashrc
+echo export TF_VAR_GITLAB_PUBLIC_ADDRESS=$GITLAB_PUBLIC_ADDRESS >> /root/.bashrc
+
+# Wait for GitLab Server
+export GITLAB_STATUS=$(curl -s -m2 http://$GITLAB_PUBLIC_ADDRESS/api/v4)
+until [ "$GITLAB_STATUS" = "{\"error\":\"404 Not Found\"}" ]; do
+  sleep 5
+  echo "Waiting for Gitlab API to respond"
+  export GITLAB_STATUS=$(curl -s -m2 http://$GITLAB_PUBLIC_ADDRESS/api/v4)
+done
+
+# Generate GitLab Access Token
+cd ~/setup/scripts
+apt update
+apt install -y python3-pip
+pip3 install BeautifulSoup4
+pip3 install lxml
+
+export GITLAB_TOKEN=$(python3 gitlab_access_token.py access-token 2025-08-31 $GITLAB_PUBLIC_ADDRESS $GITLAB_PASSWORD | awk 'END {print $NF}')
+echo export GITLAB_TOKEN=$GITLAB_TOKEN >> /root/.bashrc
+echo export TF_VAR_GITLAB_TOKEN=$GITLAB_TOKEN >> /root/.bashrc
+
+# Configure GitLab Projects
+cd ~/setup/terraform/gitlab/gitlab-projects/
+terraform init
+terraform apply -auto-approve
+
+# GIT push from local to Gitlab
+sleep 30 #~502 errors
+cd ~/setup/scripts
+./gitpush.sh
+
+# GitLab Info
+cat <<-EOF >> /root/.bashrc
+cd ~/gitclones
+echo Temporary Gitlab Server: http://$GITLAB_PUBLIC_ADDRESS/
+echo Username: root
+echo Password: $GITLAB_PASSWORD
+EOF
+
+exit 0

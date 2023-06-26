@@ -1,0 +1,13 @@
+#!/bin/bash -l
+#
+# This script runs when the platform solve the challenge.
+#
+# The platform determines if the script was successful using the exit code of this
+# script. If the exit code is not 0, the script fails. 
+#
+set -euxo pipefail
+
+echo | 05_broker_creds.bash -d 2> /dev/null
+echo | 06_broker_auth.bash -d 2> /dev/null
+
+exit 0

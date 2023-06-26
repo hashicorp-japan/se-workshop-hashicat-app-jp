@@ -1,0 +1,36 @@
+slug: vault-pki-primer-jp
+id: dhwpe4rg8r7c
+title: Vault PKI Primer (Japanese)
+teaser: PKI シークレットエンジンの基本的な設定方法を学びます。
+description: |2-
+
+  Note: Sep 30, 2022 - WIP.
+
+  Aug 12, 2022 - Upgraded to Vault v1.11.2.
+
+  <br>
+
+  # HashiCorp Vault PKI
+
+  PKI シークレットエンジンをアプリケーション間のブローカーとして使用する実用的な方法を確認します。
+      ![Counting Stars](https://raw.githubusercontent.com/interrupt-software/pki-demo-explainer/main/flask/app/static/img/instruqt_header_01.svg)
+icon: https://raw.githubusercontent.com/interrupt-software/pki-demo-explainer/main/img/vault_logo.svg
+level: beginner
+tags:
+- Vault
+owner: hashicorp
+developers:
+- yohei@hashicorp.com
+- kabu@hashicorp.com
+- kazuto.kusama@hashicorp.com
+- mitsuhiro.ohara@hashicorp.com
+- tadashi@hashicorp.com
+- shogo.katsurada@hashicorp.com
+- gilberto@hashicorp.com
+show_timer: true
+skipping_enabled: true
+lab_config:
+  overlay: false
+  width: 33
+  position: right
+checksum: "12855005313684539180"

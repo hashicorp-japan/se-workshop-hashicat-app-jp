@@ -1,0 +1,27 @@
+slug: terraform-intro-aws-1-2-5-jp
+id: s0xdwupfdkn2
+title: Intro to Terraform on AWS (1.2.5) (Japanese)
+teaser: |
+  HashiCat アプリケーションを AWS 上に Terraform でプロビジョニングします。
+description: |-
+  このトラックでは、Amazon Web Services（AWS）に対する Terraform の利用を紹介します。Terraform のセットアップ、基本的なコマンドを学び、徐々にアプリケーションスタック全体を構築していきます。終了時には、HashiCat アプリケーションをウェブブラウザで見ることができるようになります。
+
+  Kittens as a Service!
+icon: https://storage.googleapis.com/instruqt-hashicorp-tracks/logo/terraform.png
+tags:
+- terraform
+- aws
+- basics
+owner: hashicorp
+developers:
+- shogo.katsurada@hashicorp.com
+- kazuto.kusama@hashicorp.com
+- kabu@hashicorp.com
+- yohei@hashicorp.com
+- tadashi@hashicorp.com
+show_timer: true
+lab_config:
+  overlay: false
+  width: 33
+  position: right
+checksum: "12669296341779847588"

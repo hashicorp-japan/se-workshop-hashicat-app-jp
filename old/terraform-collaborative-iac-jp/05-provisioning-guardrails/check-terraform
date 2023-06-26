@@ -1,0 +1,7 @@
+#!/bin/bash
+set -e
+
+# User is supposed to add another Sentinel policy set but since one was created
+# by the setup script, doing this is not mandatory. So, no checking needed.
+
+exit 0

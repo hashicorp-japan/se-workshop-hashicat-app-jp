@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# Delete the Sentinel policy set
+cd /root/setup/terraform/tfc-sentinel
+terraform destroy -auto-approve
+
+# Delete the PMR modules and hashicups-module workspace
+cd /root/setup/terraform/tfc-registry
+terraform destroy -auto-approve
+
+# Delete the hashicups-<env> workspaces
+cd /root/setup/terraform/tfc-workspaces
+terraform destroy -auto-approve
+
+# Delete the GitLab projects
+cd /root/setup/terraform/gitlab/gitlab-projects
+terraform destroy -auto-approve
+
+# Delete the GitLab server
+cd /root/setup/terraform/gitlab/gitlab-server
+terraform destroy -auto-approve
+
+# Delete the hashicups-cli workspace
+cd /root/gitclones/hashicups-application
+TOKEN=$(cat /root/.terraform.d/credentials.tfrc.json | jq -r '.credentials["app.terraform.io"].token')
+ORG=$(grep "export TFC_ORGANIZATION" /root/.bashrc | cut -d'=' -f2)
+curl --header "Authorization: Bearer $TOKEN" --header "Content-Type: application/vnd.api+json" --request DELETE "https://app.terraform.io/api/v2/organizations/$ORG/workspaces/hashicups-cli"
+
+exit 0

@@ -1,0 +1,27 @@
+slug: terraform-collaborative-iac-jp
+id: hyhcjqxisxny
+version: 1.0.0
+title: 'Terraform: Collaborative Infrastructure as Code (Japanese)'
+teaser: |
+  Terraform OSS からTerraform Cloud へ - インフラのワークフローを変革する。
+description: |-
+  ここでは、従来のワークフローと比較し、Terraform を使用する主な利点を紹介します。
+
+   * 従来のインフラプロビジョニングワークフローの紹介
+   * 従来のワークフローの主要な問題点を解決するためのTerraform OSS の紹介
+   * Terraform Cloud /Enterprise の紹介とコラボレーション、セキュリティ、VCS インテグレーションなど
+   * モジュール化
+   * ガバナンスとPolicy as Code の紹介
+icon: https://storage.googleapis.com/instruqt-hashicorp-tracks/logo/terraform.png
+tags: []
+owner: hashicorp
+developers:
+- null
+- null
+- null
+- null
+lab_config:
+  overlay: false
+  width: 33
+  position: right
+checksum: "7278858680150695619"

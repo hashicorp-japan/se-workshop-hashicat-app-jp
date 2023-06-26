@@ -1,0 +1,25 @@
+slug: terraform-build-azure-jp
+id: zfhxm0bggov5
+title: Intro to Terraform on Azure - Terraform 0.15.1 (Japanese)
+teaser: TerraformでAzure Cloud上へのリソースのプロビジョニングとアプリケーションのデプロイを行います。
+description: このトラックでは、Terraform v0.15.1による Microsoft Azure へのプロビジョニングを学習します。 Terraformのセットアップ、基本的なコマンドを学び、アプリケーションスタック全体を構築していきます。この演習が完了すると、WebブラウザでHashiCatアプリケーションを見ることができるようになります。(Kittens
+  as a Service!)
+icon: https://storage.googleapis.com/instruqt-hashicorp-tracks/logo/terraform.png
+tags:
+- terraform
+- azure
+- basics
+- japanese
+owner: hashicorp
+developers:
+- null
+- null
+- null
+- null
+- null
+skipping_enabled: true
+lab_config:
+  overlay: false
+  width: 33
+  position: right
+checksum: "6973669046362160633"

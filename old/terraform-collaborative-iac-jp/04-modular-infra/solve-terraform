@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Enable bash history
+HISTFILE=/root/.bash_history
+set -o history
+
+# Create PMR modules and Hashicups-Application-module workspace
+cd /root/setup/terraform/tfc-registry
+terraform init
+terraform apply -auto-approve
+
+exit 0

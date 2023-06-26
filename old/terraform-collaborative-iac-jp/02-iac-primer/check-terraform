@@ -1,0 +1,33 @@
+#!/bin/bash
+
+set -e
+
+# Check results of terraform apply
+cd /root/gitclones/hashicups-application
+terraform_state=$(terraform state list | wc -l)
+if [ $terraform_state -ne 61 ]; then
+  fail-message "The terraform apply in /root/gitclones/hashicups-application did not create all 61 resources based on the terraform.tfstate file."
+fi
+
+# Check terraform outputs
+terraform_output=$(terraform output | grep "output" | wc -l)
+if [ $terraform_output -ne 1 ]; then
+  fail-message "The terraform output command does not show the output called output."
+fi
+
+# Check that /root/.terraform.d/credentials.tfrc.json exists
+if [ ! -f "/root/.terraform.d/credentials.tfrc.json" ]; then
+  echo "/root/.terraform.d/credentials.tfrc.json does not exist. Please run /root/setup/scripts/tfc-setup.sh or the terraform login command."
+fi
+
+# Try to extract token from the credentials file
+token=$(grep token /root/.terraform.d/credentials.tfrc.json | cut -d: -f2|sed -e "s/^ //")
+
+if [ -z "$token" ]
+then
+  fail-message "Your token is not set in /root/.terraform.d/credentials.tfrc.json. Please run /root/setup/scripts/tfc-setup.sh or the terraform login command."
+else
+  echo $(echo export TFE_TOKEN=$token >> /root/.bashrc)
+fi
+
+exit 0

@@ -1,0 +1,23 @@
+#!/bin/bash
+set -e
+
+# Check that remote-backend.tf was created
+remote_backend=$(cat /root/gitclones/hashicups-application/remote-backend.tf | wc -l)
+if [ $remote_backend -ne 9 ]; then
+    fail-message "The setup script for this challenge did not create /root/gitclones/hashicups-application/remote-backend.tf correctly."
+fi
+
+# Check that TF_VAR_OAUTH_TOKEN_ID was exported to .bashrc
+oauth_token=$(grep "TF_VAR_OAUTH_TOKEN_ID" /root/.bashrc | wc -l)
+if [ $oauth_token -ne 1 ]; then
+    fail-message "The setup script for this challenge did not export TF_VAR_OAUTH_TOKEN_ID to /root/.bashrc correctly."
+fi
+
+# Check that `terraform init` was run to move state to TFC
+cd /root/gitclones/hashicups-application
+terraform_state_emptied=$(cat terraform.tfstate | wc -l)
+if [ $terraform_state_emptied -ne 0 ]; then
+    fail-message "You haven't run terraform init in /root/gitclones/hashicups-application yet to transfer your state to Terraform Cloud."
+fi
+
+exit 0

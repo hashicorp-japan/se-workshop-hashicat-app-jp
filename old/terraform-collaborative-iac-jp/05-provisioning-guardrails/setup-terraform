@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Add Sentinel Policy Set with single policy to TFC
+cd ~/setup/terraform/tfc-sentinel
+terraform init
+terraform apply -auto-approve
+
+exit 0

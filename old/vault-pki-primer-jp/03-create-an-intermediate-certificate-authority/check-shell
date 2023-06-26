@@ -1,0 +1,27 @@
+#!/bin/bash -l
+#
+# This script runs when the platform check the challenge.
+#
+# The platform determines if the script was successful using the exit code of this
+# script. If the exit code is not 0, the script fails. 
+#
+set -euxo pipefail
+
+DEFAULT_INT_CA_NAME="hashicat-ca-intermediate"
+
+INT_CA_NAME=$(vault secrets list -format=json | jq -r '. | to_entries  | map(select(.value.description == "Intermediate Certificate Authority" and .value.type == "pki") | .key)[0]' || echo "false")
+
+echo $INT_CA_NAME
+
+  if [ "$INT_CA_NAME" == "null" ] || [ "$INT_CA_NAME" == "false" ]; then
+    fail-message "Need to build an Intermediate Certificate Authority. Looking for ${DEFAULT_INT_CA_NAME}."
+  else
+    INT_CA_NAME=${INT_CA_NAME::-1}
+    
+    if [ "$INT_CA_NAME" != "$DEFAULT_INT_CA_NAME" ]; then
+        fail-message "Looking for \"${DEFAULT_INT_CA_NAME}\" but found ${INT_CA_NAME}."
+    fi
+
+  fi
+
+exit 0

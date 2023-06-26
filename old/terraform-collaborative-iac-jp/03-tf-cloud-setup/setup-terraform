@@ -1,0 +1,36 @@
+#!/bin/bash
+
+## Use Terraform to configure TFC
+# Configure GitLab VCS Connection
+# Prep Remote State exercise
+# Provision hashicups TFC workspaces
+
+# Exports for Workspace ENV vars
+export TF_VAR_AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+export TF_VAR_AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+echo export TF_VAR_AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID >> /root/.bashrc
+echo export TF_VAR_AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY >> /root/.bashrc
+source /root/.bashrc
+
+# Remote State exercise
+cat <<-EOF >> ~/gitclones/hashicups-application/remote-backend.tf
+terraform {
+    backend "remote"{
+        hostname = "app.terraform.io"
+        organization = "$TFC_ORGANIZATION"
+        workspaces {
+            name = "hashicups-cli"
+        }
+    }
+}
+EOF
+
+# Create TFC VCS and Workspaces
+cd ~/setup/terraform/tfc-workspaces
+terraform init
+terraform apply -auto-approve
+
+# Export for workspace updates in Modular-Infra track
+echo export TF_VAR_OAUTH_TOKEN_ID=$(terraform output -json |jq .oauth_token_id.value --raw-output) >> /root/.bashrc
+
+exit 0

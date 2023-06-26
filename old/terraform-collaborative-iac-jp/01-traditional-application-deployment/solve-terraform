@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Enable bash history
+HISTFILE=/root/.bash_history
+set -o history
+
+# No specific solve steps needed since all work was done
+# in the challenge setup script.
+
+exit 0

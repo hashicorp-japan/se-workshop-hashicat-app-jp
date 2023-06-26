@@ -1,0 +1,23 @@
+#!/bin/bash -l
+#
+# This script runs when the platform setup the challenge.
+#
+# The platform determines if the script was successful using the exit code of this
+# script. If the exit code is not 0, the script fails. 
+#
+set -euxo pipefail
+
+# We need to create this because it is ommitted in the Git repo
+mkdir -p $WWW_HOME/app/static/logs
+
+# The SSL server needs to have the CA chain bundle for dev.hashicat.io
+cp $CERTS_HOME/hashicat-ca-intermediate_ca_bundle.crt $WWW_HOME/ca_bundle.crt
+
+# Create the server and client certificates using the HVAC Client
+cd $WWW_HOME
+python3 $WWW_HOME/hvac_client.py
+
+# Run the SSL server 
+python3 $WWW_HOME/ssl_server.py 2>&1 &
+
+exit 0

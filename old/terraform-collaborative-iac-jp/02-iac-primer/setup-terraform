@@ -1,0 +1,8 @@
+#!/bin/bash
+
+## Pre-requisite for tf-cloud-setup track
+# User runs script in ~/setup/scripts/tfc-setup
+# Script already cloned to directory
+# Script prompts for 'TFC Organization' and 'Terraform Login' for credentials
+
+exit 0

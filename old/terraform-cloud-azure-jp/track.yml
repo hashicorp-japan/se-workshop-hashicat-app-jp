@@ -1,0 +1,36 @@
+slug: terraform-cloud-azure-jp
+id: nv8rc8raoklw
+title: Terraform Cloud with Azure (Japanese)
+teaser: |
+  ACMEのdevopsチームが、Azure Cloudを使ってプロビジョニングを完全に自動化するまでの道のりをご紹介します。
+description: |-
+  株式会社ACMEのdevopsチームと一緒に、Terraformによる手動のプロビジョニングから、コードレビュー、テスト、Azure Cloudでの自動プロビジョニングによる完全に自動化されたdevopsワークフローに移行します。このワークショップでは、以下のトピックを取り上げます。
+
+  * Terraform オープンソース
+  * Terraform Cloud
+  * リモートステート
+  * セキュア変数ストレージ
+  * VCS 連携
+  * ロールベースのアクセスコントロール
+  * Sentinel セキュリティポリシー
+  * 変更に関するコラボレーション
+  * プライベート・モジュール・レジストリ
+  * APIドリブンワークフロー
+icon: https://storage.googleapis.com/instruqt-hashicorp-tracks/logo/terraform.png
+tags:
+- terraform
+- azure
+- cloud
+- enterprise
+- Japanese
+owner: hashicorp
+developers:
+- null
+- null
+- null
+- null
+lab_config:
+  overlay: false
+  width: 33
+  position: right
+checksum: "4110209303843102746"

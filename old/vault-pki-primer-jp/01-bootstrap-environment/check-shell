@@ -1,0 +1,23 @@
+#!/bin/bash -l
+#
+# This script runs when the platform check the challenge.
+#
+# The platform determines if the script was successful using the exit code of this
+# script. If the exit code is not 0, the script fails. 
+#
+set -euxo pipefail
+
+################################################################################
+# Check the history for the list of commands shared in the list provided below.
+################################################################################
+declare -a challenge_commands=("vault status" "vault token lookup" "vault secrets list")
+
+for cmd in "${challenge_commands[@]}"; 
+do
+  cmd_check=$(grep "${cmd}" /root/.bash_history || echo "false")
+  if [ "$cmd_check" == "false" ]; then
+    fail-message "Try: ${cmd}"
+  fi
+done
+
+exit 0

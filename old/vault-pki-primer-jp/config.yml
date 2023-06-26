@@ -1,0 +1,17 @@
+version: "3"
+containers:
+- name: shell
+  image: ubuntu
+  shell: /bin/bash
+  ports:
+  - 8200
+  - 5000
+  environment:
+    APP_HOME: /root/www/bash/app
+    BASH_HOME: /root/www/bash
+    CERTS_HOME: /root/www/bash/certs
+    ENV: $HOME/.bashrc
+    SKIP_SETCAP: "true"
+    VAULT_ADDR: http://127.0.0.1:8200
+    WWW_HOME: /root/www/flask
+  memory: 512

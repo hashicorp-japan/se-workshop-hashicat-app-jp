@@ -1,0 +1,196 @@
+#!/bin/bash -l
+#
+# This script runs when the platform setup the challenge.
+#
+set -euxo pipefail
+
+until [ -f /opt/instruqt/bootstrap/host-bootstrap-completed ]; do
+    echo "Waiting for Instruqt bootstrap to complete"
+    sleep 1
+done
+
+export DEBIAN_FRONTEND=noninteractive
+export TZ=America/Toronto
+
+apt-get update -y
+apt-get install bash-completion -y
+apt-get install curl unzip jq git pv -y
+apt-get install python3 python3-pip -y 
+apt-get install python3-venv -y
+pip3 install config
+pip3 install hvac
+
+##################################################
+# Check that required utilities are installed.
+# If any utility is missing, exit with error code 1.
+# This is a good practices for any dependencies.
+##################################################
+declare -a track_utilities=("curl" "unzip" "jq" "git" "python3" "pip3" "pv")
+
+for util in ${track_utilities[@]}; 
+do 
+  if ! command -v $util &> /dev/null
+  then 
+    fail-message "${util} is required but could not be found."
+  fi 
+done
+
+##################################################
+# Move on to set up Vault
+##################################################
+mkdir -p /root/downloads
+cd /root/downloads
+
+# Download and prepare Vault
+export VAULT_URL="https://releases.hashicorp.com/vault"
+VAULT_VERSION="1.11.2"
+
+curl \
+    --silent \
+    --remote-name \
+   "${VAULT_URL}/${VAULT_VERSION}/vault_${VAULT_VERSION}_linux_amd64.zip"
+
+if test -f "vault_${VAULT_VERSION}_linux_amd64.zip" ; then
+  echo  "vault_${VAULT_VERSION}_linux_amd64.zip download successful."
+else
+  echo  "vault_${VAULT_VERSION}_linux_amd64.zip download failed."
+  exit 1
+fi
+
+unzip vault_${VAULT_VERSION}_linux_amd64.zip
+
+chown root:root vault
+mv vault /usr/local/bin/
+vault -autocomplete-install
+complete -C /usr/local/bin/vault vault
+
+##################################################
+# Test to confirm that Vault is running
+##################################################
+mkdir -p /etc/vault.d
+mkdir -p /opt/vault/raft/data
+
+HOST_IP=$(hostname -I | tr -d '[:space:]')
+
+cat << EOF > /etc/vault.d/vault.hcl
+ui = true
+disable_mlock = true
+listener "tcp" {
+  address          = "0.0.0.0:8200"
+  tls_disable      = "true"
+}
+storage "raft" {
+  path = "/opt/vault/raft/data"
+  node_id = "raft_node_1"
+}
+api_addr = "http://${HOST_IP}:8200"
+cluster_addr = "https://${HOST_IP}:8200"
+EOF
+
+# Prepare to read from http instead of https on localhost
+export VAULT_ADDR="http://127.0.0.1:8200"
+
+# Test to confirm that Vault is running in "check-shell"
+/usr/local/bin/vault server -config=/etc/vault.d/vault.hcl -log-level=debug > /var/log/vault.log 2>&1 &
+
+# Sleep 10 seconds to avoid race condition with Vault startup
+sleep 10
+
+# Unseal Vault 
+vault operator init \
+  -format=json \
+  -key-shares=1 \
+  -key-threshold=1 \
+  > /root/vault-unseal.json
+
+export VAULT_UNSEAL=$(cat /root/vault-unseal.json | jq -r '.unseal_keys_b64[0]')
+export VAULT_TOKEN=$(cat /root/vault-unseal.json | jq -r '.root_token')
+
+echo "export VAULT_TOKEN=$VAULT_TOKEN" >> /root/.bashrc
+
+vault operator unseal $VAULT_UNSEAL
+
+# Sleep 10 seconds to avoid race condition with Vault unseal due to Raft writing to disk
+sleep 10
+
+vault login $VAULT_TOKEN
+
+cd /root
+vault secrets enable -path=vault-admin -version=2 kv
+vault kv put vault-admin/vault-unseal @vault-unseal.json  
+
+export WWW_HOME=/root/www
+# For the POC, these are the source data files
+# TO DO: Consolidate onto a single repository (Fri, Feb 18 2022)
+#git clone https://github.com/interrupt-software/vault-pki-broker.git /root/scripts
+git clone https://github.com/interrupt-software/pki-demo-explainer.git $WWW_HOME
+
+# Move fork of Demo Magic to the root
+mv $WWW_HOME/demo-magic /root/demo-magic 
+
+# Clean up downloads
+rm -fR /root/downloads
+
+# This is purely for demo purposes. We should be making an API call to
+# Vault via the Web interface to fetch this data. #TO DO
+mv -f /root/vault-unseal.json ${WWW_HOME}/flask/app/static/js/vault-unseal.json
+
+# Flask sequence
+cd ${WWW_HOME}/flask
+pip3 install -e .
+flask run --host=0.0.0.0 2>&1 &
+
+##################################################
+# Ensure WebApp is running. Otherwise there are 
+# no directions on how to use the demo. We will 
+# wait up to 30 seconds before failing nicely.
+##################################################
+
+check_counter=1
+flask_running="false"
+
+##################################################
+# Need to allow empty variable. We are doing this
+# because JQ returns an empty string if it does
+# find a key:value pair. 
+##################################################
+set +u
+
+while [[ $check_counter -le 6 && "$flask_running" != "true" ]]
+do
+  echo "Entering while loop in cycle No.: ${check_counter}."
+  if [[ $(curl -s http://127.0.0.1:5000/health | jq -r '.success') ]]; then
+    flask_running="true"
+    echo "flask_running: ${flask_running}, check_counter: ${check_counter} -- And we're done!"
+  else 
+    echo "flask_running: ${flask_running}, check_counter: ${check_counter} -- Trying again in 5 seconds."
+    sleep 5
+  fi
+  ((check_counter++))
+done
+
+if [ "$flask_running" -eq "false" ]; then
+  fail-message "Unable to start Flask application."
+fi
+
+##################################################
+# Let's get back to more strict mode.
+##################################################
+set -u 
+
+##################################################
+# For the participant
+##################################################
+echo "set-workdir /root" >> /root/.bashrc
+
+##################################################
+# Demo Magic to avoid typying
+##################################################
+# git clone https://github.com/paxtonhare/demo-magic.git /root/demo-magic
+sed -i 's/DEMO_CMD_COLOR=$WHITE/DEMO_CMD_COLOR=$GREEN/g' /root/demo-magic/demo-magic.sh
+
+echo "export BASH_HOME=/root/www/bash" >> /root/.bashrc
+echo "export PATH=$PATH:$BASH_HOME" >> /root/.bashrc
+echo "source \$BASH_HOME/01_env_bootstrap.bash" >> /root/.bashrc
+
+exit 0

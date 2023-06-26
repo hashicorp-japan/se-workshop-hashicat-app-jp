@@ -1,0 +1,19 @@
+#!/bin/bash
+
+## Automatically configure TFC Private Module Registry.
+# GitLab repos (Server, Network and RDS) will be added to the PMR.
+# Hashicups-Application-module root module will be updated locally with the PMR as source.
+
+#source /root/.bashrc
+
+# Modify Hashicups-Application-Module to use PMR
+cd ~/gitclones/hashicups-application-module
+sed -i -e "s,git::http://$GITLAB_PUBLIC_ADDRESS/server-team/terraform-aws-server-module.git,app.terraform.io/$TFC_ORGANIZATION/server-module/aws,g" ~/gitclones/hashicups-application-module/main.tf
+sed -i -e "s,git::http://$GITLAB_PUBLIC_ADDRESS/network-team/terraform-aws-network-module.git,app.terraform.io/$TFC_ORGANIZATION/network-module/aws,g" ~/gitclones/hashicups-application-module/main.tf
+
+# Push changes to GitLab
+git add . > /dev/null 2>&1
+git commit -m "Modify module source to TFC PMR" > /dev/null 2>&1
+git push http://root:$GITLAB_PASSWORD@$GITLAB_PUBLIC_ADDRESS/hashicups-development-team/hashicups-application-module > /dev/null 2>&1
+
+exit 0

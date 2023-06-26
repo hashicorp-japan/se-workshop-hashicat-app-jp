@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# Enable bash history
+HISTFILE=/root/.bash_history
+set -o history
+
+# CD to /root/gitclones/hashicups-application
+cd /root/gitclones/hashicups-application
+
+# Initialize Terraform
+terraform init
+
+# Do a plan
+terraform plan
+
+# Do an apply
+terraform apply -auto-approve
+
+# Check whether credentials.tfrc.json exists
+# If not, use instruqt-terraform-collaborative-iac organization
+if [ ! -f "/root/.terraform.d/credentials.tfrc.json" ]; then
+  echo "export TFC_ORGANIZATION=instruqt-terraform-collaborative-iac" >> /root/.bashrc
+  echo "export TF_VAR_TFC_ORGANIZATION=instruqt-terraform-collaborative-iac" >> /root/.bashrc
+  token=$(cat /var/tfc_user_token)
+  mkdir -p /root/.terraform.d
+  cat <<-EOF > /root/.terraform.d/credentials.tfrc.json
+{
+  "credentials": {
+    "app.terraform.io": {
+      "token": "$token"
+    }
+  }
+}
+EOF
+  echo "export TERRAFORM_CONFIG=/root/.terraform.d/credentials.tfrc.json" >> /root/.bashrc
+fi
+
+exit 0
